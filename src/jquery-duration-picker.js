@@ -16,13 +16,18 @@
     $.fn.durationPicker = function (options) {
 
         var defaults = {
-            lang: 'en',
-            formatter: function (s) {
-                return s;
-            },
-            showSeconds: false
+            lang: 'en',           
+            // TODO put min and max, maybe one specific for field?
+            min: 0,
+            totalMin: 0,
+            max: 59,
+            totalMax: 259200000, // 3 days
+            showSeconds: false,
+            showDays: true
         };
         var settings = $.extend( {}, defaults, options );
+        
+        var momentInstance = null;
 
         this.each(function (i, mainInput) {
 
@@ -39,7 +44,7 @@
             }
 
             var mainInputReplacer = $('<div class="bdp-input">' +
-                buildDisplayBlock('days') +
+                buildDisplayBlock('days', !settings.showDays) +
                 buildDisplayBlock('hours') +
                 buildDisplayBlock('minutes') +
                 buildDisplayBlock('seconds', !settings.showSeconds) +
@@ -51,6 +56,8 @@
             var hours = 0;
             var minutes = 0;
             var seconds = 0;
+            // Store an instance of moment duration
+            var totalDuration = 0;
 
             var inputs = [];
 
@@ -67,10 +74,10 @@
             }
 
             function updateMainInputReplacer() {
-                mainInputReplacer.find('#bdp-days').text(settings.formatter(days));
-                mainInputReplacer.find('#bdp-hours').text(settings.formatter(hours));
-                mainInputReplacer.find('#bdp-minutes').text(settings.formatter(minutes));
-                mainInputReplacer.find('#bdp-seconds').text(settings.formatter(seconds));
+                mainInputReplacer.find('#bdp-days').text(totalDuration.days());
+                mainInputReplacer.find('#bdp-hours').text(totalDuration.hours());
+                mainInputReplacer.find('#bdp-minutes').text(totalDuration.minutes());
+                mainInputReplacer.find('#bdp-seconds').text(totalDuration.seconds());
 
                 mainInputReplacer.find('#days_label').text(langs[settings.lang][days == 1 ? 'day' : 'days']);
                 mainInputReplacer.find('#hours_label').text(langs[settings.lang][hours == 1 ? 'hour' : 'hours']);
@@ -90,13 +97,18 @@
             function init() {
                 if (mainInput.val() === '')
                     mainInput.val(0);
-                var total = parseInt(mainInput.val(), 10);
-                seconds = total % 60;
-                total = Math.floor(total/60);
-                minutes = total % 60;
-                total = Math.floor(total/60);
-                hours = total % 24;
-                days = Math.floor(total/24);
+                
+                // TODO use singleton, create momentInstance with locale
+                if (momentInstance == null) {
+                	momentInstance = moment.locale(settings.lang);
+                }
+                
+//                var total = moment.duration(parseInt(mainInput.val(), 10));                
+//                seconds = total.seconds();
+//                minutes = total.minutes();               
+//                hours = total.hours();
+//                days = total.days();
+                totalDuration = momentInstance.duration(parseInt(mainInput.val(), 10));
                 updateMainInputReplacer();
                 updatePicker();
             }
@@ -110,6 +122,7 @@
                 updateMainInputReplacer();
             }
 
+            // TODO assign limits based on the label. Min and Max
             function buildNumericInput(label, hidden, max) {
                 var input = $('<input class="form-control input-sm" type="number" min="0" value="0">')
                     .change(picker_changed);
