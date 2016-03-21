@@ -63,7 +63,7 @@
 
             function updateMainInput() {
                 mainInput.val(totalDuration.milliseconds());
-                mainInput.change();
+                mainInput.change(); // FIXME this resets total duration, executes init.
             }
 
             function updateMainInputReplacer() {
@@ -91,8 +91,11 @@
             }
 
             function init() {
-                if (mainInput.val() === '')
-                    mainInput.val(0);
+                if (mainInput.val() === '') {
+                	console.info("EMPTY INPUT");
+                	console.info(mainInput.val());
+                	mainInput.val(0);
+                }
                 
                 // Initialize moment with locale                
                 moment.locale(settings.lang);                
