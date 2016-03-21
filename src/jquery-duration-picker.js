@@ -51,11 +51,7 @@
             '</div>');
 
             mainInput.after(mainInputReplacer).hide().data('bdp', '1');
-
-            var days = 0;
-            var hours = 0;
-            var minutes = 0;
-            var seconds = 0;
+           
             // Store an instance of moment duration
             var totalDuration = 0;
 
@@ -68,8 +64,7 @@
             }
 
             function updateMainInput() {
-                var total = seconds + minutes * 60 + hours * 60 * 60 + days * 24 * 60 * 60;
-                mainInput.val(total);
+                mainInput.val(totalDuration.milliseconds());
                 mainInput.change();
             }
 
@@ -79,19 +74,19 @@
                 mainInputReplacer.find('#bdp-minutes').text(totalDuration.minutes());
                 mainInputReplacer.find('#bdp-seconds').text(totalDuration.seconds());
 
-                mainInputReplacer.find('#days_label').text(langs[settings.lang][days == 1 ? 'day' : 'days']);
-                mainInputReplacer.find('#hours_label').text(langs[settings.lang][hours == 1 ? 'hour' : 'hours']);
-                mainInputReplacer.find('#minutes_label').text(langs[settings.lang][minutes == 1 ? 'minute' : 'minutes']);
-                mainInputReplacer.find('#seconds_label').text(langs[settings.lang][seconds == 1 ? 'second' : 'seconds']);
+                mainInputReplacer.find('#days_label').text(totalDuration.days().humanize());
+                mainInputReplacer.find('#hours_label').text(totalDuration.hours().humanize());
+                mainInputReplacer.find('#minutes_label').text(totalDuration.minutes().humanize());
+                mainInputReplacer.find('#seconds_label').text(totalDuration.seconds().humanize());
             }
 
             function updatePicker() {
                 if (disabled)
                     return;
-                inputs['days'].val(days);
-                inputs['hours'].val(hours);
-                inputs['minutes'].val(minutes);
-                inputs['seconds'].val(seconds);
+                inputs['days'].val(totalDuration.days());
+                inputs['hours'].val(totalDuration.hours());
+                inputs['minutes'].val(totalDuration.minutes());
+                inputs['seconds'].val(totalDuration.seconds());
             }
 
             function init() {
@@ -103,21 +98,18 @@
                 	momentInstance = moment.locale(settings.lang);
                 }
                 
-//                var total = moment.duration(parseInt(mainInput.val(), 10));                
-//                seconds = total.seconds();
-//                minutes = total.minutes();               
-//                hours = total.hours();
-//                days = total.days();
                 totalDuration = momentInstance.duration(parseInt(mainInput.val(), 10));
                 updateMainInputReplacer();
                 updatePicker();
             }
 
             function picker_changed() {
-                days = parseInt(inputs['days'].val());
-                hours = parseInt(inputs['hours'].val());
-                minutes = parseInt(inputs['minutes'].val());
-                seconds = parseInt(inputs['seconds'].val());
+            	totalDuration = ({
+            		seconds : parseInt(inputs['seconds'].val()
+            		minutes : parseInt(inputs['minutes'].val()
+            		hours : parseInt(inputs['hours'].val()
+            		days :  parseInt(inputs['days'].val()
+            	});                
                 updateMainInput();
                 updateMainInputReplacer();
             }
