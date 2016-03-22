@@ -96,7 +96,7 @@
                 	console.info(mainInput.val());
                 	mainInput.val(0);
                 }
-                
+                                
                 // Initialize moment with locale                
                 moment.locale(settings.lang);                
                 

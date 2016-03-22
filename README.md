@@ -1,9 +1,9 @@
 # bootstrap-duration-picker
 
-Javascript library for selecting duration. It's a fork from https://github.com/koss-lebedev/bootstrap-duration-picker updated to use Bootstrap and includes moment.js to manage all dates. Target input to which plugin is applied should contain duration in seconds.
+Javascript library for selecting duration. It's a fork from https://github.com/koss-lebedev/bootstrap-duration-picker updated to use Bootstrap and includes moment.js to manage all dates. Target input to which plugin is applied should contain duration in milliseconds (ms).
 
-This plugin works with miliseconds and relies on moment.js for i18n using it's humanize() function.
-Also added max and min values for the picker.
+This plugin relies on moment.js for i18n using it's humanize() function.
+Also added max and min values for the picker. This is a development branch, not fully functional.
 
 ## Example
 
