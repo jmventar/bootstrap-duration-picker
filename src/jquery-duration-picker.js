@@ -62,7 +62,10 @@
             }
 
             function updateMainInput() {
+            	// FIXME check mainInput value...
                 mainInput.val(totalDuration.milliseconds());
+                console.info("TOTAL VALUE");
+                console.info(mainInput.val());
                 mainInput.change(); // FIXME this resets total duration, executes init.
             }
 
@@ -96,7 +99,7 @@
                 	console.info(mainInput.val());
                 	mainInput.val(0);
                 }
-                                
+                
                 // Initialize moment with locale                
                 moment.locale(settings.lang);                
                 
