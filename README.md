@@ -35,7 +35,8 @@ $('.duration-picker').durationPicker({
     lang: 'en', // ISO code of the language, default is EN.
     showDays: true, // defines whether to show days or not. Default is true
     showSeconds: false // defines whether to show seconds or not. Default is false
-    checkRanges: false, // defines a maximum range that will accept the picker. If the value is larger applies that maximum range. Default is false
+    checkRanges: false, // defines a maximum range that will accept the picker.
+    // If the value is larger applies that maximum range. Default is false
 	totalMax: 31556952000, // Only applies if checkRanges is true. Default maximum range is 1 year in ms. 
             
              

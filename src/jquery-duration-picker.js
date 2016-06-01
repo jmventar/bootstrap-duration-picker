@@ -111,7 +111,6 @@
                 updateMainInputReplacer();
             }
 
-            // TODO assign limits based on the label. Min and Max
             function buildNumericInput(label, hidden, max) {
                 var input = $('<input class="form-control input-sm" type="number" min="0" value="0">')
                     .change(picker_changed);
