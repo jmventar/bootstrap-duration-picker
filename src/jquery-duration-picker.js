@@ -14,17 +14,17 @@
     };
 
     $.fn.durationPicker = function (options) {
+    	
+    	// Store an instance of moment duration
+        var totalDuration = 0;
 
         var defaults = {
-            lang: 'en',           
-            // TODO put min and max, maybe one specific for field?
-            min: 0,
-            totalMin: 0,
-            max: 59,
-            totalMax: 259200000, // 3 days
+            lang: 'en',            
+            max: 59,            
             showSeconds: false,
             showDays: true
         };
+        
         var settings = $.extend( {}, defaults, options );
                 
         this.each(function (i, mainInput) {
@@ -48,10 +48,7 @@
                 buildDisplayBlock('seconds', !settings.showSeconds) +
             '</div>');
 
-            mainInput.after(mainInputReplacer).hide().data('bdp', '1');
-           
-            // Store an instance of moment duration
-            var totalDuration = null;
+            mainInput.after(mainInputReplacer).hide().data('bdp', '1');                       
 
             var inputs = [];
 
@@ -62,11 +59,8 @@
             }
 
             function updateMainInput() {
-            	// FIXME check mainInput value...
-                mainInput.val(totalDuration.milliseconds());
-                console.info("TOTAL VALUE");
-                console.info(mainInput.val());
-                mainInput.change(); // FIXME this resets total duration, executes init.
+                mainInput.val(totalDuration.asMilliseconds());                
+                mainInput.change(); 
             }
 
             function updateMainInputReplacer() {
@@ -78,10 +72,10 @@
                 mainInputReplacer.find('#bdp-minutes').text(totalDuration.minutes());
                 mainInputReplacer.find('#bdp-seconds').text(totalDuration.seconds());
 
-                mainInputReplacer.find('#days_label').text(totalDuration.humanize('days'));
-                mainInputReplacer.find('#hours_label').text(totalDuration.humanize('hours'));
-                mainInputReplacer.find('#minutes_label').text(totalDuration.humanize('minutes'));
-                mainInputReplacer.find('#seconds_label').text(totalDuration.humanize('seconds'));
+                mainInputReplacer.find('#days_label').text(langs[settings.lang][totalDuration.days() == 1 ? 'day' : 'days']);
+                mainInputReplacer.find('#hours_label').text(langs[settings.lang][totalDuration.hours() == 1 ? 'hour' : 'hours']);
+                mainInputReplacer.find('#minutes_label').text(langs[settings.lang][totalDuration.minutes() == 1 ? 'minute' : 'minutes']);
+                mainInputReplacer.find('#seconds_label').text(langs[settings.lang][totalDuration.seconds() == 1 ? 'second' : 'seconds']);
             }
 
             function updatePicker() {
@@ -96,7 +90,6 @@
             function init() {
                 if (mainInput.val() === '') {
                 	console.info("EMPTY INPUT");
-                	console.info(mainInput.val());
                 	mainInput.val(0);
                 }
                 
