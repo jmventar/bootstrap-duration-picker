@@ -20,7 +20,9 @@
 
         var defaults = {
             lang: 'en',            
-            max: 59,            
+            max: 59,
+            checkRanges: false,
+            totalMax: 31556952000, // 1 year
             showSeconds: false,
             showDays: true
         };
@@ -63,10 +65,7 @@
                 mainInput.change(); 
             }
 
-            function updateMainInputReplacer() {
-            	
-            	console.info("totalDuration object");
-            	console.info(totalDuration);
+            function updateMainInputReplacer() {            	
                 mainInputReplacer.find('#bdp-days').text(totalDuration.days());
                 mainInputReplacer.find('#bdp-hours').text(totalDuration.hours());
                 mainInputReplacer.find('#bdp-minutes').text(totalDuration.minutes());
@@ -88,8 +87,7 @@
             }
 
             function init() {
-                if (mainInput.val() === '') {
-                	console.info("EMPTY INPUT");
+                if (mainInput.val() === '') {              
                 	mainInput.val(0);
                 }
                 
@@ -107,7 +105,8 @@
             		minutes : parseInt(inputs.minutes.val()),
             		hours : parseInt(inputs.hours.val()),
             		days :  parseInt(inputs.days.val())
-            	});            	
+            	});
+            	checkRanges();
                 updateMainInput();
                 updateMainInputReplacer();
             }
@@ -126,10 +125,20 @@
                 }
                 return ctrl.prepend(input);
             }
+            
+            function checkRanges() {
+            	if (settings.checkRanges) {            		
+            		// Assign max value if out of range
+            		totalDuration = (totalDuration.asMilliseconds() > settings.totalMax) ? moment.duration(settings.totalMax) : totalDuration;            		
+            	}
+            	// Trigger change
+            	updateMainInput();
+                updateMainInputReplacer();      
+            }
 
             if (!disabled) {
                 var picker = $('<div class="bdp-popover"></div>');
-                buildNumericInput('days', false).appendTo(picker);
+                buildNumericInput('days', !settings.showDays).appendTo(picker);
                 buildNumericInput('hours', false, 23).appendTo(picker);
                 buildNumericInput('minutes', false, 59).appendTo(picker);
                 buildNumericInput('seconds', !settings.showSeconds, 59).appendTo(picker);
