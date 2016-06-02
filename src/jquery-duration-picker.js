@@ -23,6 +23,7 @@
             max: 59,
             checkRanges: false,
             totalMax: 31556952000, // 1 year
+            totalMin: 60000, // 1 minute
             showSeconds: false,
             showDays: true
         };
@@ -89,12 +90,13 @@
             function init() {
                 if (mainInput.val() === '') {              
                 	mainInput.val(0);
-                }
+                }                                
                 
                 // Initialize moment with locale                
                 moment.locale(settings.lang);                
                 
                 totalDuration = moment.duration(parseInt(mainInput.val(), 10));
+                checkRanges();
                 updateMainInputReplacer();
                 updatePicker();
             }
@@ -129,10 +131,9 @@
             	if (settings.checkRanges) {            		
             		// Assign max value if out of range
             		totalDuration = (totalDuration.asMilliseconds() > settings.totalMax) ? moment.duration(settings.totalMax) : totalDuration;            		
+            		// Assign minimum value if out of range
+            		totalDuration = (totalDuration.asMilliseconds() < settings.totalMin) ? moment.duration(settings.totalMin) : totalDuration;            		  
             	}
-            	// Trigger change
-            	updateMainInput();
-                updateMainInputReplacer();      
             }
 
             if (!disabled) {

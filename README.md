@@ -37,8 +37,7 @@ $('.duration-picker').durationPicker({
     showSeconds: false // defines whether to show seconds or not. Default is false
     checkRanges: false, // defines a maximum range that will accept the picker.
     // If the value is larger applies that maximum range. Default is false
-	totalMax: 31556952000, // Only applies if checkRanges is true. Default maximum range is 1 year in ms. 
-            
-             
+	totalMax: 31556952000, // Only applies if checkRanges is true. Default maximum range is 1 year in ms.
+	totalMin: 60000 // Only applies if checkRanges is true. Default minimum range is 1 minute in ms.             
 });
 ```
