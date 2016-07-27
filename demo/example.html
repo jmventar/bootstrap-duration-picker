@@ -19,6 +19,7 @@
 <body>
     <div class="container">
         <div class="row">
+
             <div class="col-md-offset-3 col-md-6">
                 <form>
                     <div class="form-group">
@@ -27,7 +28,7 @@
                     </div>
                 </form>
             </div>
-
+	
             <div class="col-md-offset-3 col-md-6">
                 <form>
                     <div class="form-group">
@@ -42,7 +43,7 @@
     <script>
         $(function () {
             $('#duration').durationPicker();
-            $('#duration2').durationPicker({ showSeconds: true });
+            $('#duration2').durationPicker({ showSeconds: true, checkRanges: true, totalMax: 259200000 /* 3 days */ });
         });
     </script>
 

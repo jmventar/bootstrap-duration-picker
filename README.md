@@ -2,8 +2,7 @@
 
 Javascript library for selecting duration. It's a fork from https://github.com/koss-lebedev/bootstrap-duration-picker updated to use Bootstrap and includes moment.js to manage all dates. Target input to which plugin is applied should contain duration in milliseconds (ms).
 
-This plugin relies on moment.js for i18n using it's humanize() function.
-Also added max and min values for the picker. This is a development branch, not fully functional.
+Added maximum range and some other options.
 
 ## Example
 
@@ -33,8 +32,12 @@ $('.duration-picker').durationPicker();
 // or
 
 $('.duration-picker').durationPicker({
-    lang: 'en',
-    formatter: some_function // a function that gets numbers displayed in input and returns a formatted one,
-    showSeconds: false // defines whether to show seconds or not 
+    lang: 'en', // ISO code of the language, default is EN.
+    showDays: true, // defines whether to show days or not. Default is true
+    showSeconds: false // defines whether to show seconds or not. Default is false
+    checkRanges: false, // defines a maximum range that will accept the picker.
+    // If the value is larger applies that maximum range. Default is false
+	totalMax: 31556952000, // Only applies if checkRanges is true. Default maximum range is 1 year in ms.
+	totalMin: 60000 // Only applies if checkRanges is true. Default minimum range is 1 minute in ms.             
 });
 ```

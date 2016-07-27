@@ -14,17 +14,20 @@
     };
 
     $.fn.durationPicker = function (options) {
+    	
+    	// Store an instance of moment duration
+        var totalDuration = 0;
 
         var defaults = {
-            lang: 'en',           
-            // TODO put min and max, maybe one specific for field?
-            min: 0,
-            totalMin: 0,
+            lang: 'en',            
             max: 59,
-            totalMax: 259200000, // 3 days
+            checkRanges: false,
+            totalMax: 31556952000, // 1 year
+            totalMin: 60000, // 1 minute
             showSeconds: false,
             showDays: true
         };
+        
         var settings = $.extend( {}, defaults, options );
                 
         this.each(function (i, mainInput) {
@@ -48,10 +51,7 @@
                 buildDisplayBlock('seconds', !settings.showSeconds) +
             '</div>');
 
-            mainInput.after(mainInputReplacer).hide().data('bdp', '1');
-           
-            // Store an instance of moment duration
-            var totalDuration = null;
+            mainInput.after(mainInputReplacer).hide().data('bdp', '1');                       
 
             var inputs = [];
 
@@ -62,26 +62,20 @@
             }
 
             function updateMainInput() {
-            	// FIXME check mainInput value...
-                mainInput.val(totalDuration.milliseconds());
-                console.info("TOTAL VALUE");
-                console.info(mainInput.val());
-                mainInput.change(); // FIXME this resets total duration, executes init.
+                mainInput.val(totalDuration.asMilliseconds());                
+                mainInput.change(); 
             }
 
-            function updateMainInputReplacer() {
-            	
-            	console.info("totalDuration object");
-            	console.info(totalDuration);
+            function updateMainInputReplacer() {            	
                 mainInputReplacer.find('#bdp-days').text(totalDuration.days());
                 mainInputReplacer.find('#bdp-hours').text(totalDuration.hours());
                 mainInputReplacer.find('#bdp-minutes').text(totalDuration.minutes());
                 mainInputReplacer.find('#bdp-seconds').text(totalDuration.seconds());
 
-                mainInputReplacer.find('#days_label').text(totalDuration.humanize('days'));
-                mainInputReplacer.find('#hours_label').text(totalDuration.humanize('hours'));
-                mainInputReplacer.find('#minutes_label').text(totalDuration.humanize('minutes'));
-                mainInputReplacer.find('#seconds_label').text(totalDuration.humanize('seconds'));
+                mainInputReplacer.find('#days_label').text(langs[settings.lang][totalDuration.days() == 1 ? 'day' : 'days']);
+                mainInputReplacer.find('#hours_label').text(langs[settings.lang][totalDuration.hours() == 1 ? 'hour' : 'hours']);
+                mainInputReplacer.find('#minutes_label').text(langs[settings.lang][totalDuration.minutes() == 1 ? 'minute' : 'minutes']);
+                mainInputReplacer.find('#seconds_label').text(langs[settings.lang][totalDuration.seconds() == 1 ? 'second' : 'seconds']);
             }
 
             function updatePicker() {
@@ -94,16 +88,15 @@
             }
 
             function init() {
-                if (mainInput.val() === '') {
-                	console.info("EMPTY INPUT");
-                	console.info(mainInput.val());
+                if (mainInput.val() === '') {              
                 	mainInput.val(0);
-                }
+                }                                
                 
                 // Initialize moment with locale                
                 moment.locale(settings.lang);                
                 
                 totalDuration = moment.duration(parseInt(mainInput.val(), 10));
+                checkRanges();
                 updateMainInputReplacer();
                 updatePicker();
             }
@@ -114,12 +107,12 @@
             		minutes : parseInt(inputs.minutes.val()),
             		hours : parseInt(inputs.hours.val()),
             		days :  parseInt(inputs.days.val())
-            	});            	
+            	});
+            	checkRanges();
                 updateMainInput();
                 updateMainInputReplacer();
             }
 
-            // TODO assign limits based on the label. Min and Max
             function buildNumericInput(label, hidden, max) {
                 var input = $('<input class="form-control input-sm" type="number" min="0" value="0">')
                     .change(picker_changed);
@@ -133,10 +126,19 @@
                 }
                 return ctrl.prepend(input);
             }
+            
+            function checkRanges() {
+            	if (settings.checkRanges) {            		
+            		// Assign max value if out of range
+            		totalDuration = (totalDuration.asMilliseconds() > settings.totalMax) ? moment.duration(settings.totalMax) : totalDuration;            		
+            		// Assign minimum value if out of range
+            		totalDuration = (totalDuration.asMilliseconds() < settings.totalMin) ? moment.duration(settings.totalMin) : totalDuration;            		  
+            	}
+            }
 
             if (!disabled) {
                 var picker = $('<div class="bdp-popover"></div>');
-                buildNumericInput('days', false).appendTo(picker);
+                buildNumericInput('days', !settings.showDays).appendTo(picker);
                 buildNumericInput('hours', false, 23).appendTo(picker);
                 buildNumericInput('minutes', false, 59).appendTo(picker);
                 buildNumericInput('seconds', !settings.showSeconds, 59).appendTo(picker);
