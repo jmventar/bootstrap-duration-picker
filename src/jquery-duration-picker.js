@@ -55,19 +55,18 @@ $.fn.durationPicker = function (options) {
                         '</div>';
             }
 
-            var $mainInputReplacer = $('<div class="bdp-input">' +
-                buildDisplayBlock('days', !settings.showDays) +
-                buildDisplayBlock('hours') +
-                buildDisplayBlock('minutes') +
-                buildDisplayBlock('seconds', !settings.showSeconds) +
-            '</div>');
-
-            $mainInput.after($mainInputReplacer).hide().data('bdp', '1');                       
+            var $mainInputReplacer = $('<div class="bdp-input"></div>');
+            $mainInputReplacer.append(buildDisplayBlock('days', !settings.showDays));
+            $mainInputReplacer.append(buildDisplayBlock('hours'));
+            $mainInputReplacer.append(buildDisplayBlock('minutes'));
+            $mainInputReplacer.append(buildDisplayBlock('seconds', !settings.showSeconds));
+            
+            $mainInput.after($mainInputReplacer).hide().data('bdp', '1');
 
             var inputs = [];
 
             var disabled = false;
-            if ($mainInput.hasClass('disabled') || $mainInput.attr('disabled') =='disabled') {
+            if ($mainInput.hasClass('disabled') || $mainInput.attr('disabled') == 'disabled') {
                 disabled = true;
                 $mainInputReplacer.addClass('disabled');
             }
@@ -101,7 +100,7 @@ $.fn.durationPicker = function (options) {
             }
 
             function init() {
-                if ($mainInput.val() === '') {
+                if (!$mainInput.val()) {
                 	$mainInput.val(0);
                 }
 
