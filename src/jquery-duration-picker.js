@@ -42,7 +42,7 @@ $.fn.durationPicker = function (options) {
                 
         this.each(function (i, mainInput) {
 
-            $mainInput = $(mainInput);
+            var $mainInput = $(mainInput);
 
             if ($mainInput.data('bdp') === '1') {
             	return;
